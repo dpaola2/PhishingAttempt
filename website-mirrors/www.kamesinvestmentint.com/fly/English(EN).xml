@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<phrases>
+	<phrase key="android_english"><![CDATA[English]]></phrase>
+	<phrase key="android_app_name"><![CDATA[Flynax Classifieds]]></phrase>
+	<phrase key="android_menu_settings"><![CDATA[Settings]]></phrase>
+	<phrase key="android_menu_about_app"><![CDATA[About App]]></phrase>
+	<phrase key="android_menu_send_feedback"><![CDATA[Send Feedback]]></phrase>
+	<phrase key="android_menu_search"><![CDATA[Search]]></phrase>
+	<phrase key="android_menu_map_type"><![CDATA[Map Type]]></phrase>
+	<phrase key="android_menu_distance_unit"><![CDATA[Distance Unit]]></phrase>
+	<phrase key="android_menu_listing_type"><![CDATA[Listing Type]]></phrase>
+	
+	<phrase key="android_map_type_normal"><![CDATA[Normal]]></phrase>
+	<phrase key="android_map_type_satellite"><![CDATA[Satellite]]></phrase>
+	<phrase key="android_map_type_hybrid"><![CDATA[Hybrid]]></phrase>
+	<phrase key="android_map_type_terrain"><![CDATA[Terrain]]></phrase>
+	
+	<phrase key="android_unit_miles"><![CDATA[Miles]]></phrase>
+	<phrase key="android_unit_kilometers"><![CDATA[Kilometers]]></phrase>
+	<phrase key="android_unit_miles_short"><![CDATA[mi]]></phrase>
+	<phrase key="android_unit_kilometers_short"><![CDATA[km]]></phrase>
+	<phrase key="android_unit_foots_short"><![CDATA[ft]]></phrase>
+	<phrase key="android_unit_metres_short"><![CDATA[m]]></phrase>
+	
+	<phrase key="android_title_activity_flyn_droid"><![CDATA[Flynax]]></phrase>
+	<phrase key="android_title_activity_recently_added"><![CDATA[Recently Added]]></phrase>
+	<phrase key="android_title_activity_favorites"><![CDATA[Favorites]]></phrase>
+	<phrase key="android_title_activity_search_around"><![CDATA[Search Around Me]]></phrase>
+	<phrase key="android_title_activity_search"><![CDATA[Search]]></phrase>
+	<phrase key="android_title_activity_home"><![CDATA[Home]]></phrase>
+	<phrase key="android_title_activity_preferences"><![CDATA[Preferences]]></phrase>
+	<phrase key="android_title_activity_listing_details"><![CDATA[Listing Details]]></phrase>
+	<phrase key="android_title_activity_account_details"><![CDATA[Account Details]]></phrase>
+	<phrase key="android_title_activity_listing_gallery"><![CDATA[Photo Gallery]]></phrase>
+	<phrase key="android_title_activity_search_results"><![CDATA[Search Results]]></phrase>
+	<phrase key="android_title_activity_search_accounts"><![CDATA[Search Results]]></phrase>
+	<phrase key="android_title_activity_about_app"><![CDATA[About App]]></phrase>
+	<phrase key="android_title_activity_send_feedback"><![CDATA[Send Feedback]]></phrase>
+	<phrase key="android_title_activity_video"><![CDATA[Video]]></phrase>
+	
+	<phrase key="android_dialog_ok"><![CDATA[Ok]]></phrase>
+	<phrase key="android_dialog_cancel"><![CDATA[Cancel]]></phrase>
+	<phrase key="android_dialog_set"><![CDATA[Set]]></phrase>
+	<phrase key="android_dialog_sort"><![CDATA[Sort]]></phrase>
+	<phrase key="android_dialog_details"><![CDATA[Details]]></phrase>
+	<phrase key="android_dialog_invalid_domain"><![CDATA[Invalid domain! Please check domain and try again]]></phrase>
+	<phrase key="android_dialog_network_unavailable"><![CDATA[The network is unavailable, please check Internet settings]]></phrase>
+	<phrase key="android_dialog_plugin_isset"><![CDATA[The domain you entered is unavailable for the App]]></phrase>
+	<phrase key="android_dialog_host_unavailable"><![CDATA[The website you're trying to connect is unavaialble, please try again later]]></phrase>
+	<phrase key="android_dialog_empty_search_warning"><![CDATA[Please specify your search criteria]]></phrase>
+	<phrase key="android_dialog_field_is_empty"><![CDATA[Please fill in the field]]></phrase>
+	
+	<phrase key="android_welcome_copyrights"><![CDATA[Powered by Flynax Classifieds Software]]></phrase>
+	<phrase key="android_welcome_go"><![CDATA[Go!]]></phrase>
+	<phrase key="android_welcome_try_demo"><![CDATA[Or Try Demo]]></phrase>
+	<phrase key="android_welcome_domain_hint"><![CDATA[Enter domain name]]></phrase>
+	<phrase key="android_hello_world"><![CDATA[Hello world!]]></phrase>
+	
+	<phrase key="android_user_pref_change_domain"><![CDATA[Connect to another website]]></phrase>
+	<phrase key="android_user_pref_change_domain_summary"><![CDATA[Terminate the session and start over]]></phrase>
+	<phrase key="android_user_pref_change_language"><![CDATA[Change language]]></phrase>
+	<phrase key="android_user_pref_change_language_summary"><![CDATA[Change the App language]]></phrase>
+	<phrase key="android_user_pref_preload_method"><![CDATA[Content preloading method]]></phrase>
+    <phrase key="android_user_pref_preload_method_summary"><![CDATA[Ads preloading options]]></phrase>
+	<phrase key="android_user_pref_clear_cache"><![CDATA[Clear Cache]]></phrase>
+	<phrase key="android_user_pref_clear_cache_summary"><![CDATA[Update cache for the domain]]></phrase>
+	<phrase key="android_pref_toast_cache_updated"><![CDATA[System cache has been updated]]></phrase>
+	
+	<phrase key="android_user_pref_clear_cache"><![CDATA[Clear cache]]></phrase>
+	<phrase key="android_user_pref_clear_cache_summary"><![CDATA[Clear cache stored in the App]]></phrase>
+	
+	<phrase key="android_home_title_mess"><![CDATA[Error!]]></phrase>
+	
+	<phrase key="android_there_are_no_listings"><![CDATA[There are no listings]]></phrase>
+	<phrase key="android_there_are_no_accounts"><![CDATA[There are no available accounts]]></phrase>
+	<phrase key="android_there_are_no_accounts_by_char"><![CDATA[There are no accounts by "{char}" request]]></phrase>
+	<phrase key="android_there_are_no_listings_in_category"><![CDATA[There are no listings in the category]]></phrase>
+	<phrase key="android_there_are_not_search"><![CDATA[Search forms were not configured]]></phrase>
+	<phrase key="android_there_are_not_listing_types"><![CDATA[There are no available listing types]]></phrase>
+	<phrase key="android_there_are_no_categories"><![CDATA[There are no available categories]]></phrase>
+	<phrase key="android_no_listings_found"><![CDATA[No listings found]]></phrase>
+	<phrase key="android_http_request_faild"><![CDATA[Unable to connect to a remote host, please try again later]]></phrase>
+	<phrase key="android_no_account_listings"><![CDATA[The account doesn't have any listings]]></phrase>
+	<phrase key="android_no_listing_location_found"><![CDATA[Listing location hasn't been identified]]></phrase>
+	<phrase key="android_no_featured_listings"><![CDATA[There are no featured listings]]></phrase>
+	<phrase key="android_no_listing_account_found"><![CDATA[Account location hasn't been identified]]></phrase>
+	<phrase key="android_no_listing_video"><![CDATA[The listing doesn't have video]]></phrase>
+	<phrase key="android_there_no_listings_found"><![CDATA[No listings found, please try a different search combination]]></phrase>
+	<phrase key="android_there_no_accounts_found"><![CDATA[No accounts found, please try a different search combination]]></phrase>
+	<phrase key="android_returned_xml_failed"><![CDATA[The XML content received is corrupt. A bug report has been sent to developers]]></phrase>
+	<phrase key="android_no_sorting_fields_available"><![CDATA[There are no available sorting fields]]></phrase>
+	
+	<phrase key="android_toast_list"><![CDATA[Select]]></phrase>
+	<phrase key="android_keyword_search"><![CDATA[Keyword Search]]></phrase>
+	<phrase key="android_no_listing_title"><![CDATA[No title specified]]></phrase>
+	<phrase key="android_today"><![CDATA[Today]]></phrase>
+	<phrase key="android_yesterday"><![CDATA[Yesterday]]></phrase>
+	<phrase key="android_number_days_ago"><![CDATA[{number} days ago]]></phrase>
+	<phrase key="android_load_next_number_listings"><![CDATA[Load next {number} listings]]></phrase>
+	<phrase key="android_load_next_number_accounts"><![CDATA[Load next {number} accounts]]></phrase>
+	<phrase key="android_loading_next_number_listings"><![CDATA[Loading next {number} listings]]></phrase>
+	<phrase key="android_loading_next_number_accounts"><![CDATA[Loading next {number} accounts]]></phrase>
+	<phrase key="android_loading"><![CDATA[Loading...]]></phrase>
+	<phrase key="android_comments_divider"><![CDATA[Comments]]></phrase>
+	<phrase key="android_no_comments_exist"><![CDATA[There are no comments]]></phrase>
+	<phrase key="android_contact_owner_caption"><![CDATA[Contact owner]]></phrase>
+	<phrase key="android_tab_caption_details"><![CDATA[Details]]></phrase>
+	<phrase key="android_tab_caption_seller"><![CDATA[Seller Info]]></phrase>
+	<phrase key="android_tab_caption_video"><![CDATA[Video]]></phrase>
+	<phrase key="android_tab_caption_listings"><![CDATA[Seller Listings]]></phrase>
+	<phrase key="android_tab_caption_map"><![CDATA[Map]]></phrase>
+	<phrase key="android_tab_alphabetic_search"><![CDATA[Alphabetic Search]]></phrase>
+	<phrase key="android_tab_advanced_search"><![CDATA[Advanced Search]]></phrase>
+	<phrase key="android_around_me"><![CDATA[Around Me]]></phrase>
+	<phrase key="android_other_listings"><![CDATA[Other Listings]]></phrase>
+	<phrase key="android_listings"><![CDATA[Listings]]></phrase>
+	<phrase key="android_listing_count"><![CDATA[Listing(s)]]></phrase>
+	<phrase key="android_no_favorites"><![CDATA[You don't have favorite listings]]></phrase>
+	<phrase key="android_any"><![CDATA[any]]></phrase>
+	<phrase key="android_radio_yes"><![CDATA[Yes]]></phrase>
+	<phrase key="android_radio_no"><![CDATA[No]]></phrase>
+	<phrase key="android_form_search"><![CDATA[Search]]></phrase>
+	<phrase key="android_form_reset"><![CDATA[Reset]]></phrase>
+	<phrase key="android_select_field"><![CDATA[Select {field}]]></phrase>
+	<phrase key="android_any_field"><![CDATA[Any {field}]]></phrase>
+	<phrase key="android_above_number"><![CDATA[Above {number}]]></phrase>
+	<phrase key="android_below_number"><![CDATA[Below {number}]]></phrase>
+	<phrase key="android_zip_within"><![CDATA[within]]></phrase>
+	<phrase key="android_zipcode"><![CDATA[ZIP code]]></phrase>
+	<phrase key="android_menu_browse_caption"><![CDATA[Browse]]></phrase>
+	<phrase key="android_menu_user_area_caption"><![CDATA[Account]]></phrase>
+	<phrase key="android_menu_login"><![CDATA[Log In]]></phrase>
+	<phrase key="android_menu_accounts_caption"><![CDATA[Sellers]]></phrase>
+	<phrase key="android_distance_from_you"><![CDATA[{distance} {unit} from you]]></phrase>
+	<phrase key="android_show_list"><![CDATA[Show List]]></phrase>
+	<phrase key="android_show_map"><![CDATA[Show Map]]></phrase>
+	<phrase key="android_listings_found"><![CDATA[Listings found: {number}]]></phrase>
+	<phrase key="android_search_location"><![CDATA[Search Location]]></phrase>
+	<phrase key="android_alphabetic_search_all"><![CDATA[All]]></phrase>
+	<phrase key="android_alphabet"><![CDATA[A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z]]></phrase>
+	<phrase key="android_about_app_content"><![CDATA[The Application is intended for browsing contents of Flynax powered classifieds websites, and is distributed as freeware.\r\n\r\nAll rights to the Application belong to Flynax Company.]]></phrase>
+	<phrase key="android_about_app_visit"><![CDATA[Visit]]></phrase>
+	<phrase key="android_about_app_link"><![CDATA[www.flynax.com]]></phrase>
+	<phrase key="android_your_name"><![CDATA[Your Name]]></phrase>
+	<phrase key="android_your_email"><![CDATA[Your E-mail]]></phrase>
+	<phrase key="android_send_feedback_subject"><![CDATA[Subject]]></phrase>
+	<phrase key="android_send_feedback_message"><![CDATA[Message]]></phrase>
+	<phrase key="android_send_feedback_feedback"><![CDATA[Feedback]]></phrase>
+	<phrase key="android_send_feedback_bug_report"><![CDATA[Bug Report]]></phrase>
+	<phrase key="android_send_feedback_feature_request"><![CDATA[Request for a feature]]></phrase>
+	<phrase key="android_send_feedback_contact_us"><![CDATA[Contact Us]]></phrase>
+	<phrase key="android_send_feedback_completed"><![CDATA[Thanks! Your request has been sent, our managers will get back to you soon]]></phrase>
+	<phrase key="android_sort_listings_by"><![CDATA[Sort listings by]]></phrase>
+	<phrase key="android_sort_asc"><![CDATA[(low to high)]]></phrase>
+	<phrase key="android_sort_desc"><![CDATA[(high to low)]]></phrase>
+	<phrase key="android_send"><![CDATA[Send]]></phrase>
+	<phrase key="android_hint_username"><![CDATA[Username]]></phrase>
+	<phrase key="android_hint_password"><![CDATA[Password]]></phrase>
+	<phrase key="android_login"><![CDATA[Log In]]></phrase>
+	<phrase key="android_logout"><![CDATA[Log Out]]></phrase>
+	<phrase key="android_or"><![CDATA[Or]]></phrase>
+	<phrase key="android_fb_login"><![CDATA[Login using facebook]]></phrase>
+
+	<phrase key="android_email_owner_subject"><![CDATA[A new message regarding "{listing_title}" at {site_name}]]></phrase>
+	<phrase key="android_email_owner_body"><![CDATA[Hello {owner_name},<br /><br />I am contacting you regarding this listing: {listing_link}<br /><br />**Add your message here or remove this line!**<br /><br />{site_url}]]></phrase>
+	
+	<phrase key="android_email_account_subject"><![CDATA[A new message received at {site_name}]]></phrase>
+	<phrase key="android_email_account_body"><![CDATA[Hello {owner_name},<br /><br />**Add your message here or remove this line!**<br /><br />{site_url}]]></phrase>
+	<phrase key="android_pref_toast_cache_updated"><![CDATA[Cache updated]]></phrase>
+	
+</phrases>

@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<plugin name="xmlFeeds">
+	<title>XML Feeds</title>
+	<description>XML Feeds/Files Import</description>
+	<author>Mike Fletcher</author>
+	<owner>Flynax Classifieds Software</owner>
+	<version>2.1.1</version>
+	<date>1.04.2012</date>
+	<controller>xml_feeds</controller>
+
+	<notice/>
+	
+	<files>
+		<file>control.inc.php</file>
+		<file>export.php</file>
+		<file>import.php</file>
+		<file>rlXmlFeeds.class.php</file>
+		<file>rlXmlImport.class.php</file>
+		<file>user_feeds.tpl</file>
+		<file>user_feeds.inc.php</file>
+		<file>admin/import_frame.tpl</file>
+		<file>admin/xml_feeds.tpl</file>
+		<file>admin/xml_feeds.inc.php</file>
+		<file>modules/flMap.format.php</file>
+		<file>static/gallery.png</file>
+		<file>static/import_progress.css</file>
+		<file>static/style.css</file>
+	</files>
+
+	<install><![CDATA[
+		global $rlDb;
+
+		$sql ="CREATE TABLE `".RL_DBPREFIX."xml_formats` (
+			`ID` int(11) NOT NULL auto_increment,
+			`Key` varchar(255) NOT NULL default '',
+			`Xpath` varchar(255) NOT NULL default '',			
+			`Status` enum('active','approval') NOT NULL default 'active',
+			`Format_for` set('export','import') NOT NULL,
+			PRIMARY KEY  (`ID`)
+			) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$rlDb -> query( $sql );
+
+		$sql ="CREATE TABLE `".RL_DBPREFIX."xml_feeds` (
+			`ID` int(11) NOT NULL auto_increment,
+			`Key` varchar(255) NOT NULL default '',
+			`Url` tinytext DEFAULT '',
+			`Format` varchar(255) NOT NULL DEFAULT '',
+			`Plan_ID` int(5) NOT NULL DEFAULT 0,
+			`Feed_type` enum('one', 'create') NOT NULL default 'one',
+			`Feed_account_type` varchar(20) NOT NULL DEFAULT '',
+			`Account_ID` int(7) NOT NULL DEFAULT 0,
+  			`Default_category` int(6) NOT NULL DEFAULT 0,
+  			`Listings_status` enum('active','approval') NOT NULL default 'active',
+  			`Listing_type` varchar(255) NOT NULL DEFAULT '',
+			`Status` enum('active','approval') NOT NULL default 'active',
+			PRIMARY KEY  (`ID`)
+			) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$rlDb -> query( $sql );
+
+		$sql ="CREATE TABLE `".RL_DBPREFIX."xml_statistics` (
+			`ID` int(11) NOT NULL auto_increment,
+			`Account_ID` int(11) NOT NULL,
+			`Feed` varchar(255) NOT NULL default '',
+			`Date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			`Listings_inserted`text CHARACTER SET utf8 NOT NULL,
+			`Listings_updated` text CHARACTER SET utf8 NOT NULL,
+			`Listings_deleted` int(11) NOT NULL default '0',
+			`Error` varchar(255) NOT NULL default '',
+			`Status` enum('completed','error') NOT NULL default 'completed',
+			PRIMARY KEY  (`ID`)
+			) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$rlDb -> query( $sql );
+
+		$sql ="CREATE TABLE `".RL_DBPREFIX."xml_mapping` (
+			`ID` int(11) NOT NULL auto_increment,
+			`Parent_ID` int(11) NOT NULL,
+			`Format` varchar(255) NOT NULL,
+			`Data_local` varchar(255) NOT NULL,
+			`Data_remote` varchar(255) NOT NULL,
+			`Example_value` varchar(255) NOT NULL,
+			`Cdata` enum('0','1') NOT NULL default '0',
+			`Default` varchar(255) NOT NULL,
+			`Status` enum('active','approval') NOT NULL default 'active',
+			PRIMARY KEY  (`ID`)
+			) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$rlDb -> query( $sql );
+
+		$sql = "ALTER TABLE `".RL_DBPREFIX."listings` ADD `xml_ref` VARCHAR(255) NULL DEFAULT ''";
+		$rlDb -> query( $sql );
+
+		$sql ="INSERT INTO `".RL_DBPREFIX."listing_fields` (`Key`, `Type`, `Multilingual`, `Details_page`, `Add_page`, `Required`, `Map`, `Opt1`, `Opt2`, `Status`, `Readonly`) VALUES ('xml_ref', 'text', '0', '0', '0', '0', '0', '0', '', 'active', '1')";
+		$rlDb -> query( $sql );
+
+		foreach( $GLOBALS['languages'] as $key => $lang_item )
+		{
+			$lang_insert[$key]['Code'] = $lang_item['Code'];
+			$lang_insert[$key]['Module'] = 'common';
+			$lang_insert[$key]['Key'] = 'listing_fields+name+xml_ref';
+			$lang_insert[$key]['Status'] = 'active';
+			$lang_insert[$key]['Value'] = 'Feed reference id (System Field of XmlFeeds plugin)';
+		}
+
+		$GLOBALS['rlActions'] -> insert($lang_insert, "lang_keys");
+
+		$sql = "ALTER TABLE `".RL_DBPREFIX."accounts` ADD `xml_ref` VARCHAR(255) NULL DEFAULT ''";
+		$rlDb -> query( $sql );
+
+		$sql = "ALTER TABLE `".RL_DBPREFIX."listings` ADD `xml_feed_key` VARCHAR(255) NULL DEFAULT ''";
+		$rlDb -> query( $sql );
+
+		$sql = "ALTER TABLE `".RL_DBPREFIX."accounts` ADD `xml_feed_key` VARCHAR(255) NULL DEFAULT ''";
+		$rlDb -> query( $sql );
+		]]>
+	</install>
+
+	<hooks>
+		<hook name="apTplHeader"><![CDATA[
+			global $controller;
+			
+			if ( $controller == 'xml_feeds' )
+			{
+				echo '<link href="'. RL_PLUGINS_URL .'xmlFeeds/static/style.css" type="text/css" rel="stylesheet" />';
+			}
+		]]></hook>
+		<hook name="apTplListingsSearch2"><![CDATA[
+			global $xmlfeeds;
+
+			echo '<tr><td class="name w130">'.$GLOBALS['lang']['xf_filter_by_feed'].'</td><td class="field">';
+			echo '<select class="filters w200" id="xml_feed_key"><option value="">'.$GLOBALS['lang']['select'].'</option>';
+
+			foreach( $xmlfeeds as $xk => $xml_feed )
+			{
+				echo '<option value="'.$xml_feed['Key'].'"';
+				if ($_GET['feed'] == $xml_feed['Key'])
+				{
+					echo 'selected="selected"';
+				}
+				echo '>'.$xml_feed['name'].'</option>';
+			}
+			echo '</select></td></tr>';
+			]]></hook>
+		<hook name="apExtListingsFilters"><![CDATA[
+			global $filters;
+			$filters['f_xml_feed_key'] = true;
+			]]></hook>
+		<hook name="apTplListingsRemoteFilter"><![CDATA[
+			if( $_GET['feed'] )
+			{
+				echo 'cookies_filters = new Array();';
+				echo "cookies_filters[0] = new Array('xml_feed_key', '".$_GET['feed']."');";
+				if( $_GET['username'] )
+				{
+					echo "cookies_filters[1] = new Array('Account', '".$_GET['username']."');";
+				}
+			}
+
+			]]></hook>
+		<hook name="apPhpListingsBottom"><![CDATA[
+			global $xmlfeeds;
+			$sql ="SELECT * FROM `".RL_DBPREFIX."xml_feeds` WHERE `Status` = 'active' ";
+			$xmlfeeds = $GLOBALS['rlDb'] -> getAll($sql);
+			$xmlfeeds = $GLOBALS['rlLang'] -> replaceLangKeys( $xmlfeeds, 'xml_feeds', array('name') );
+			]]></hook>
+		<hook name="cronAdditional"><![CDATA[
+		 	foreach( scandir( RL_CACHE ) as $key => $file )
+			{
+				preg_match("/^xml_[a-z0-9]{32}$/", $file, $match);
+				if( $match[0] && filemtime( RL_CACHE.$file ) + 6000 > time() )
+				{
+					unlink( RL_CACHE.$file );
+				}
+			}
+		  ]]></hook>
+	</hooks>
+
+	<phrases>
+		<phrase key="ext_xml_feeds_manager" module="ext"><![CDATA[Feed manager]]></phrase>
+		<phrase key="ext_xml_formats_manager" module="ext"><![CDATA[Format manager]]></phrase>
+		<phrase key="ext_xml_users_manager" module="ext"><![CDATA[Feed user manager]]></phrase>
+		<phrase key="ext_xml_mapping_manager" module="ext"><![CDATA[Mapping manager]]></phrase>
+		<phrase key="ext_notice_delete_feed" module="ext"><![CDATA[Are you sure you want to remove the feed?]]></phrase>
+		<phrase key="ext_notice_delete_format" module="ext"><![CDATA[Are you sure you want to remove the format with all feeds assigned?]]></phrase>
+		<phrase key="ext_notice_delete_user" module="ext"><![CDATA[Are you sure you want to remove the user?]]></phrase>
+		<phrase key="ext_xf_insert_item" module="admin"><![CDATA[Copy a data item to Flynax Data Entries]]></phrase>
+		<phrase key="xf_add_feed" module="admin"><![CDATA[Add a feed]]></phrase>
+		<phrase key="xf_add_format" module="admin"><![CDATA[Add a format]]></phrase>
+		<phrase key="xf_add_user" module="admin"><![CDATA[Add a user]]></phrase>
+		<phrase key="xf_edit_feed" module="admin"><![CDATA[Edit feed]]></phrase>
+		<phrase key="xf_edit_format" module="admin"><![CDATA[Edit format]]></phrase>
+		<phrase key="xf_edit_user" module="admin"><![CDATA[Edit user]]></phrase>
+		<phrase key="xf_manage_feeds" module="admin"><![CDATA[Manage feeds]]></phrase>
+		<phrase key="xf_manage_formats" module="admin"><![CDATA[Manage formats]]></phrase>		
+		<phrase key="xf_feed_type" module="admin"><![CDATA[Feed type]]></phrase>
+		<phrase key="xf_ftype_one" module="admin"><![CDATA[A user]]></phrase>		
+		<phrase key="xf_format_name" module="admin"><![CDATA[Format name]]></phrase>		
+		<phrase key="xf_format" module="common"><![CDATA[Feed format]]></phrase>
+		<phrase key="xf_type_system" module="admin"><![CDATA[System]]></phrase>
+		<phrase key="xf_type_mapping" module="admin"><![CDATA[Mapping]]></phrase>		
+		<phrase key="xf_notice_url_exist" module="admin"><![CDATA[Feed with the same URL already exists]]></phrase>
+		<phrase key="xf_notice_url_incorrect" module="admin"><![CDATA[The URL is incorrect]]></phrase>
+		<phrase key="xf_notice_format_empty" module="admin"><![CDATA[Please select a format for the feed]]></phrase>		
+		<phrase key="xf_default_category" module="admin"><![CDATA[Default category]]></phrase>
+		<phrase key="xf_default_category_hint" module="admin"><![CDATA[The category will be used by default for ads for which a target category was not found]]></phrase>
+		<phrase key="xf_statistics" module="admin"><![CDATA[Manage feed]]></phrase>
+		<phrase key="xf_import" module="admin"><![CDATA[Proceed]]></phrase>
+		<phrase key="xf_start_import" module="admin"><![CDATA[Importing in process]]></phrase>
+		<phrase key="xf_destroy" module="admin"><![CDATA[Remove]]></phrase>
+		<phrase key="xf_fill_required_fields" module="admin"><![CDATA[Please fill in all required fields]]></phrase>
+		<phrase key="xf_listing_ids" module="admin"><![CDATA[Listing IDs]]></phrase>
+		<phrase key="xf_click_to_show" module="admin"><![CDATA[Click to see listings]]></phrase>
+		<phrase key="xf_stats_feed" module="admin"><![CDATA[XML feed name]]></phrase>
+		<phrase key="xf_stats_date" module="admin"><![CDATA[Importing date]]></phrase>
+		<phrase key="xf_stats_account" module="admin"><![CDATA[Account]]></phrase>
+		<phrase key="xf_stats_updated" module="admin"><![CDATA[Listings updated]]></phrase>
+		<phrase key="xf_stats_inserted" module="admin"><![CDATA[Listings imported]]></phrase>
+		<phrase key="xf_stats_deleted" module="admin"><![CDATA[Listings removed]]></phrase>
+		<phrase key="xf_clear_statistics" module="admin"><![CDATA[Clear stats]]></phrase>
+		<phrase key="xf_stats_cleared" module="admin"><![CDATA[The stats have been cleared]]></phrase>
+		<phrase key="xf_view_listings" module="admin"><![CDATA[View imported ads]]></phrase>
+		<phrase key="xf_run_import" module="admin"><![CDATA[Run import]]></phrase>
+		<phrase key="xf_filter_by_feed" module="admin"><![CDATA[XML feed]]></phrase>
+		<phrase key="xf_mapping_hint" module="admin"><![CDATA[Please build mapping]]></phrase>
+		<phrase key="xf_added_need_build" module="admin"><![CDATA[Item has been successfully added. Please proceed to building the mapping [here]]]></phrase>
+		<phrase key="xf_build_mapping" module="admin"><![CDATA[Build mapping]]></phrase>
+		<phrase key="xf_map_add_row" module="admin"><![CDATA[Add a row]]></phrase>
+		<phrase key="xf_map_remove_row" module="admin"><![CDATA[Remove row]]></phrase>
+		<phrase key="xf_xpath" module="admin"><![CDATA[Path to listing fields]]></phrase>
+		<phrase key="xf_map_example_value" module="admin"><![CDATA[Sample value]]></phrase>
+		<phrase key="xf_mileage_measurement" module="admin"><![CDATA[Mileage unit]]></phrase>
+		<phrase key="xf_sysfields_label" module="admin"><![CDATA[---system fields---]]></phrase>
+		<phrase key="xf_pictures" module="admin"><![CDATA[Pictures]]></phrase>
+		<phrase key="xf_pictures_ftype" module="admin"><![CDATA[A system image field]]></phrase>
+		<phrase key="xf_ref_field" module="admin"><![CDATA[Reference id field]]></phrase>
+		<phrase key="xf_ref_ftype" module="admin"><![CDATA[A unique id of a listing in XML feed]]></phrase>
+		<phrase key="xf_no_stats" module="admin"><![CDATA[There are no stats]]></phrase>
+		<phrase key="xf_stats_bc" module="admin"><![CDATA[Stats for [feed] feed]]></phrase>
+		<phrase key="xf_listings_status" module="admin"><![CDATA[Status of imported ads]]></phrase>
+		<phrase key="xf_processing" module="admin"><![CDATA[Processing... please wait]]></phrase>
+		<phrase key="xf_export" module="admin"><![CDATA[Export]]></phrase>
+		<phrase key="xf_export_type" module="admin"><![CDATA[Export from]]></phrase>
+		<phrase key="xf_etype_one" module="admin"><![CDATA[A user]]></phrase>
+		<phrase key="xf_etype_all" module="admin"><![CDATA[All users]]></phrase>
+		<phrase key="xf_htrule_add" module="admin"><![CDATA[Add rewrite rule]]></phrase>
+		<phrase key="xf_htrule_edit" module="admin"><![CDATA[Edit rule]]></phrase>
+		<phrase key="xf_rewrite_hint" module="admin"><![CDATA[Rewrite rule is optional. The rewrite rule template is uniform for all export URLs]]></phrase>
+		<phrase key="xf_rewrite_rule" module="admin"><![CDATA[.htaccess rewrite rule template]]></phrase>
+		<phrase key="xf_export_url" module="admin"><![CDATA[XML feed URL]]></phrase>
+		<phrase key="xf_rewrite_incorrect" module="admin"><![CDATA[Rewrite rule is incorrect, please keep [formats] and [params] variables in the rule]]></phrase>
+		<phrase key="xf_parse" module="admin"><![CDATA[Parse feed]]></phrase>
+		<phrase key="xf_export_limit" module="admin"><![CDATA[Number of exported ads]]></phrase>
+		<phrase key="xf_module" module="admin"><![CDATA[Module]]></phrase>
+		<phrase key="xf_progress_df_missing" module="admin"><![CDATA[[value] wasn't found in Data Entries for [field] field]]></phrase>
+		<phrase key="xf_progress_cat_missing" module="admin"><![CDATA[[value] wasn't found in categories for [field] field]]></phrase>
+		<phrase key="xf_back_url" module="admin"><![CDATA[Back link]]></phrase>
+		<phrase key="xf_mapping_of_format" module="admin"><![CDATA[{format} Mapping]]></phrase>
+		<phrase key="xf_mapping_of_field" module="admin"><![CDATA[{field} Mapping]]></phrase>
+		<phrase key="xf_add_mapping_item" module="admin"><![CDATA[Add a mapping item]]></phrase>
+		<phrase key="xf_listingfields_label" module="admin"><![CDATA[Regular fields]]></phrase>
+		<phrase key="xf_remote_field" module="admin"><![CDATA[Source field]]></phrase>
+		<phrase key="xf_local_field" module="admin"><![CDATA[Target field]]></phrase>
+		<phrase key="xf_remote_data" module="admin"><![CDATA[Source data]]></phrase>
+		<phrase key="xf_local_data" module="admin"><![CDATA[Target data]]></phrase>
+		<phrase key="xf_plan" module="admin"><![CDATA[Listing plan]]></phrase>
+		<phrase key="xf_latitude" module="admin"><![CDATA[Latitude (system field)]]></phrase>
+		<phrase key="xf_longitude" module="admin"><![CDATA[Longitude (system field)]]></phrase>
+		<phrase key="xf_username" module="admin"><![CDATA[Username]]></phrase>
+		<phrase key="xf_feed_url" module="common"><![CDATA[XML feed URL]]></phrase>
+		<phrase key="xf_notice_remove_feed" module="admin"><![CDATA[Are you sure you want to remove the feed?]]></phrase>
+		<phrase key="xf_notice_remove_item" module="admin"><![CDATA[Are you sure you want to remove the item?]]></phrase>
+		<phrase key="xf_submit_feed" module="frontEnd"><![CDATA[Submit a feed]]></phrase>
+		<phrase key="xf_feed_name" module="common"><![CDATA[Feed name]]></phrase>
+		<phrase key="xf_feed_url" module="common"><![CDATA[XML feed URL]]></phrase>
+		<phrase key="xf_configure_formats" module="frontEnd"><![CDATA[XML feed format is not yet configured, please contact the Administrator]]></phrase>
+		<phrase key="xf_feed_submitted" module="frontEnd"><![CDATA[The feed has been submitted]]></phrase>
+		<phrase key="xf_unit" module="frontEnd"><![CDATA[Unit]]></phrase>
+		<phrase key="xf_help_no_format" module="admin"><![CDATA[You don't have any formats, please add a format]]></phrase>
+		<phrase key="xf_help_no_mapping" module="admin"><![CDATA[You have to build mapping for your format or add a feed and run feed import, which will add source fields to mapping]]></phrase>
+		<phrase key="xf_help_category_mapping" module="admin"><![CDATA[Category mapping is the same for all category fields. To connect a subcategory you have to click on the manage icon for the parent category]]></phrase>
+		<phrase key="xf_help_export" module="admin"><![CDATA[Here you can build a URL for an export feed]]></phrase>
+		<phrase key="xf_help_select_field_mapping" module="admin"><![CDATA[You have to link source data items to corresponding target data items]]></phrase>		
+		<phrase key="xf_clear_mapping" module="admin"><![CDATA[Clear mapping]]></phrase>		
+		<phrase key="xf_progress_start" module="admin"><![CDATA[Importing in process]]></phrase>
+		<phrase key="xf_progress_imported" module="admin"><![CDATA[The feed has been successfully imported]]></phrase>
+		<phrase key="xf_progress_fail" module="admin"><![CDATA[Importing the feed failed due to the above reasons]]></phrase>
+		<phrase key="xf_progress_mapping" module="admin"><![CDATA[Mapping has been successfully populated with source fields]]></phrase>
+		<phrase key="xf_progress_ad_inserted" module="admin"><![CDATA[Listing ID=[id] imported]]></phrase>
+		<phrase key="xf_progress_ad_updated" module="admin"><![CDATA[Listing ID=[id] updated]]></phrase>		
+		<phrase key="xf_progress_no_data" module="admin"><![CDATA[Failed to parse XML data]]></phrase>
+		<phrase key="xf_progress_map_item_added" module="admin"><![CDATA[{xml_value} mapping entry added to {xml_field} mapping item]]></phrase>
+		<phrase key="xf_progress_map_field_added" module="admin"><![CDATA[{xml_field} field added to mapping]]></phrase>
+		<phrase key="xf_progress_category_not_found" module="admin"><![CDATA[Failed to find {listing_cat_data} in categories of the {ckey} level on Flynax site]]></phrase>
+		<phrase key="xf_progress_category_item_added" module="admin"><![CDATA[{listing_cat_data} mapping item added to category mapping]]></phrase>
+		<phrase key="xf_progress_no_account" module="admin"><![CDATA[Importing failed: no account found]]></phrase>
+		<phrase key="xf_progress_no_ref" module="admin"><![CDATA['Flynax feed reference id’ field  is not linked; failed to import the listing]]></phrase>
+		<phrase key="xf_rewrite_success" module="admin"><![CDATA[Rewrite rule has been succussfully applied to the .htaccess]]></phrase>
+		<phrase key="xf_progress_xpath_fail" module="admin"><![CDATA[The path to listing fields is incorrect]]></phrase>
+		<phrase key="xf_cdata" module="admin"><![CDATA[CDATA]]></phrase>
+
+		<phrase version="2.1.0" key="xf_progress_file_fail" module="admin"><![CDATA[The file cannot be accessed or it doesn't exist]]></phrase>
+		<phrase version="2.1.0" key="xf_mapping_default" module="admin"><![CDATA[Default]]></phrase>
+		<phrase version="2.1.0" key="xf_progress_map_item_added_mf" module="admin"><![CDATA[{xml_value} mapping entry has been added to {xml_prev_field} mapping item for the {xml_field} field]]></phrase>
+		<phrase version="2.1.0" key="xf_progress_map_item_not_mapped_mf" module="admin"><![CDATA[You have to map {xml_field} > {xml_parent} > {xml_value} data item to corresponding value of the target  field]]></phrase>
+		<phrase version="2.1.0" key="xf_progress_map_item_not_mapped" module="admin"><![CDATA[You have to map {xml_field} > {xml_value} data item to corresponding local value]]></phrase>	
+		<phrase version="2.1.0" key="xf_progress_category_mapping_missed" module="admin"><![CDATA[You have to map category level {level} to complete mapping for categories. If the field is missing from the xml feed you can use default mapping feature]]></phrase>
+		<phrase version="2.1.0" key="xf_listing_types" module="admin"><![CDATA[Listing types]]></phrase>
+
+		<phrase version="2.1.1" key="xf_format_for" module="admin"><![CDATA[Format is for]]></phrase>
+		<phrase version="2.1.1" key="xf_import_label" module="admin"><![CDATA[Import]]></phrase>
+		<phrase version="2.1.1" key="xf_export_label" module="admin"><![CDATA[Export]]></phrase>
+		<phrase version="2.1.1" key="xf_default" module="admin"><![CDATA[Default]]></phrase>
+		<phrase version="2.1.1" key="xf_default_hint" module="admin"><![CDATA[The field will be used by default if these data are unavailable for an ad or are missing from the feed and if you want to add it to imported ads]]></phrase>		
+	</phrases>
+
+	<configs key="xml_feeds" name="XML Feeds">
+		<![CDATA[]]>
+			<config key="xml_show_info" name="Show tips and other information" description="" values="" type="bool"><![CDATA[1]]></config>
+			<!--config key="xml_users_import" name="Allow website users to run import" description="if disabled users will be able only submit feeds" values="" type="text"><![CDATA[0]]></config>
+			<config key="xml_users_feeds_status" name="Status of imported by user listings" description="if user import enabled" values="active,inactive" type="text"><![CDATA[active]]></config-->
+			<config key="xml_import_categories_automatically" name="Add missing categories automatically" description="When disabled missing categories will be added to XML mapping for consideration" values="" type="bool" validate=""><![CDATA[0]]></config>
+			<config key="xml_import_df_automatically" name="Add missing data items to Data Entries automatically" description="When disabled missing data items will be added to XML mapping for consideration" values="" type="bool" validate=""><![CDATA[0]]></config>
+			<config key="xml_set_missed_listings_expired" name="Mark listings as expired, which are no longer present in a feed" description="" values="" type="bool" validate=""><![CDATA[0]]></config>
+	</configs>
+
+	<pages>
+		<page key="user_feeds" name="XML data feeds" type="system" path="xml-feeds" get="" controller="user_feeds" login="1" menus="2" tpl="1"><![CDATA[]]></page>
+	</pages>
+
+	<updates>
+		<update version="2.1.0" files="admin/xml_feeds.inc.php,admin/xml_feeds.tpl,export.php,import.php,modules/flMap.format.php,rlXmlFeeds.class.php,rlXmlImport.class.php"><![CDATA[
+			$sql ="ALTER TABLE `".RL_DBPREFIX."xml_mapping` ADD `Default` VARCHAR(255) NOT NULL";
+			$GLOBALS['rlDb'] -> query($sql);
+
+			$sql ="ALTER TABLE `".RL_DBPREFIX."xml_feeds` ADD `Listing_type` varchar(255) NOT NULL";
+			$GLOBALS['rlDb'] -> query($sql);
+			]]></update>
+		<update version="2.1.1" files="admin/xml_feeds.inc.php,admin/xml_feeds.tpl,modules/flMap.format.php,rlXmlImport.class.php,user_feeds.inc.php"><![CDATA[
+			$sql ="ALTER TABLE `".RL_DBPREFIX."xml_formats` ADD `Format_for` set('export','import') NOT NULL";
+			$GLOBALS['rlDb'] -> query($sql);
+		]]></update>
+	</updates>
+
+	<uninstall><![CDATA[
+		global $rlDb;
+
+		$sql ="DROP TABLE `".RL_DBPREFIX."xml_formats` ";
+		$rlDb -> query($sql);
+
+		$sql ="DROP TABLE `".RL_DBPREFIX."xml_feeds` ";
+		$rlDb -> query($sql);
+
+		$sql ="DROP TABLE `".RL_DBPREFIX."xml_statistics` ";
+		$rlDb -> query($sql);
+
+		$sql ="DROP TABLE `".RL_DBPREFIX."xml_mapping` ";
+		$rlDb -> query($sql);		 
+
+		$sql = "ALTER TABLE `".RL_DBPREFIX."listings` DROP `xml_ref`";
+		$rlDb -> query($sql);
+
+		$sql ="DELETE FROM `".RL_DBPREFIX."listing_fields` WHERE `Key` = 'xml_ref'";
+		$rlDb -> query($sql);
+
+		$sql ="DELETE FROM `".RL_DBPREFIX."lang_keys` WHERE `Key` = 'listing_fields+name+xml_ref'";
+		$rlDb -> query($sql);
+
+		$sql = "ALTER TABLE `".RL_DBPREFIX."listings` DROP `xml_feed_key`";
+		$rlDb -> query($sql);
+
+		$sql = "ALTER TABLE `".RL_DBPREFIX."accounts` DROP `xml_ref`";
+		$rlDb -> query($sql);
+
+		$sql = "ALTER TABLE `".RL_DBPREFIX."accounts` DROP `xml_feed_key`";
+		$rlDb -> query($sql);
+
+		foreach( scandir( RL_CACHE ) as $key => $file )
+		{
+			preg_match("/^xml_[a-z0-9]{32}$/", $file, $match);
+			if( $match[0] )
+			{
+				unlink( RL_CACHE.$file );
+			}
+		}
+	]]>
+	</uninstall>
+</plugin>

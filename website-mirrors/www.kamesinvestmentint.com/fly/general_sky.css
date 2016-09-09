@@ -1,0 +1,44 @@
+img.item_del {
+	background: url("../../../templates/general_simple_green/img/gallery.png") no-repeat scroll -30px -1627px rgba(0, 0, 0, 0);
+	cursor: pointer;
+    height: 9px;
+    width: 9px;
+}
+#shc-my-cart {
+	float: right;
+	padding: 7px 0 0 5px;
+}
+div#shc-my-cart .inner {
+    background: url("general_sky.png") no-repeat scroll 0 0 #B0D2E3;
+	background-position: 10px 4px;
+	border-radius: 3px; 
+    padding: 3px 0px 3px 31px;
+    position: relative;
+    z-index: 200;
+	float: left;
+	text-align: right;
+}
+#shc-my-cart .inner a span.active,
+#shc-my-cart .inner a span.arrow {
+	background: url("../../../templates/general_sky/img/gallery.png") no-repeat scroll -22px -827px rgba(0, 0, 0, 0);
+    padding: 0 15px;
+}
+#shc-my-cart .inner a span.active {
+	background-position: -22px -846px;
+}
+.shc-active { }
+div#shc-my-cart .inner a.shc-my-cart {
+	color: #285168;
+    font-size: 12px !important;
+    text-decoration: none;
+}
+.shopping_cart_layer {
+	background: none repeat scroll 0 0 #B0D2E3;
+    border-radius: 0 5px 5px;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+    margin-top: 27px;
+    padding: 7px 10px 10px;
+    position: absolute;
+	z-index: 3;
+	width: 250px;
+}

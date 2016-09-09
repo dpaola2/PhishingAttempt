@@ -1,0 +1,53 @@
+img.item_del {
+	background: url("../../../templates/general_simple_green/img/gallery.png") no-repeat scroll -30px -1627px rgba(0, 0, 0, 0);
+	cursor: pointer;
+    height: 9px;
+    width: 9px;
+}
+#shc-my-cart {
+	float: left;
+	margin-right: 5px;
+}
+#shc-my-cart img.active,
+#shc-my-cart img.arrow {
+	background: url("../../../templates/general_simple_red/img/gallery.png") no-repeat scroll -23px -26px rgba(0, 0, 0, 0);
+	height: 7px;
+	margin: 3px 0 0 10px;
+	width: 9px;
+}
+#shc-my-cart img.active {
+	background-position: -23px -34px;
+}
+div#shc-my-cart .inner {
+    background: url("general_simple_red.png") no-repeat scroll 0 0 #E07165;
+	background-position: 10px 3px; 
+    padding: 1px 15px 7px 31px;
+    position: relative;
+    z-index: 200;
+	float: left;
+}
+.shc-active {
+	background: linear-gradient(to bottom, #5B5B5B 0%, #787878 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    position: relative;
+}
+div#shc-my-cart .inner a.shc-my-cart {
+	color: #FFFFFF;
+    font-size: 12px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+.shopping_cart_layer {
+	position: absolute;
+	background: none repeat scroll 0 0 #F5D4D0;
+    border-top: 2px solid #FFFFFF;
+    box-shadow: 0 6px 5px -5px rgba(0, 0, 0, 0.35);
+    cursor: default;
+    margin: 26px 0 0;
+    padding: 8px;
+	width: 250px;
+}
+.clear-cart {
+    background: url("clear-cart.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+	width: 23px;
+	height: 23px;
+}

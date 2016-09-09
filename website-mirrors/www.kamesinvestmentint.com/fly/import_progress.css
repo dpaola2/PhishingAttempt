@@ -1,0 +1,15 @@
+div.progress_notice
+{
+	color: green;
+	padding:10px 0;
+}
+.progress_warning
+{
+	color:#FB941B;
+	padding:10px 0;
+}
+.progress_error
+{
+	color:#FB941B;
+	padding:2px 0;
+}

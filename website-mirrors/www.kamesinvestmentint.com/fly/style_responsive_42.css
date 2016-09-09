@@ -1,0 +1,50 @@
+/* weather forecast styles */
+
+#wf_area_cond {
+	padding-right: 40px;
+	max-width: 220px;
+}
+#wf_area_main div.caption {
+	padding-bottom: 10px;
+}
+#wf_area_forecast ul > li:not(:last-child) {
+	margin-bottom: 8px;
+}
+#wf_area_forecast ul > li > div {
+	display: inline-block;
+	vertical-align: top;
+}
+#wf_area_forecast ul > li > div.day {
+	width: 45px;
+	height: 37px; /* next icon height */
+	line-height: 37px;
+}
+#wf_area_forecast ul > li > div.icon {
+	margin-right: 20px;
+}
+
+body[dir=rtl] #wf_area_cond {
+	padding-right: 0;
+	padding-left: 40px;
+}
+body[dir=rtl] #wf_area_forecast ul > li > div.icon {
+	margin-right: 0;
+	margin-left: 20px;
+}
+
+@media screen and (max-width: 767px) {
+	#wf_area_data > div:first-child {
+		float: none;
+		margin: 0 0 20px 0;
+		max-width: inherit;
+	}
+	#wf_area_cond div.cur_img {
+		display: inline-block;
+		width: 119px;
+	}
+	#wf_area_cond div.cur_cond {
+		display: inline-block;
+	}
+}
+
+/* weather forecast styles end */
