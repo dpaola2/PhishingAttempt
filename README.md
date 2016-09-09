@@ -2,7 +2,7 @@ One of our student advisors at Bloc received a phishing email today. I thought I
 
 Here are the steps I took (my scratch pad is info.md):
 
-1. Open the attached file in my editor (Request for Comment.html)
+1. Open the attached file in my editor (Request for Quotation.html)
 2. Notice it had one script tag with base-64 encoded data. Put that data into the `base64` file, Decode that and store it in decoded.html (using the `base64` OS X CLI)
 3. Open decoded.html, notice it has encoded data that is unescaped and then passed to `document.write`, which executes the code immediately
 4. create javascript_decode.html containing the encoded data and log it to the console. open that doc in my browser, save the console logged data as `unescaped.html`
