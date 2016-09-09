@@ -1,3 +1,9 @@
+Created a mirror using this command:
+
+- ```$ wget -mk <url>```
+
+Had to do both the base website and explicitly mirror the `/wp/xplore` directory to obtain the PHP file
+
 URLs found:
 
 ```<form novalidate method="post" action="http://www.kamesinvestmentint.com/wp/xplore/babajesus/mail.php" id="gaia_loginform">```
@@ -11,4 +17,9 @@ Many images are hosted on millwallcu.com:
 also found this weird thing in the footer:
 
 ```<!-- l25.member.sg3.yahoo.com compressed/chunked Sat Apr  5 10:06:59 PDT 2014 -->```
+
+- hacker's name or handle or somethign is "pontiffico"
+- kenbeet.php is the PHP file in a bunch of folders that redirects to an HTML file containing the escaped, base64-encoded malicious javascript
+- [Kenbeet limited](http://www.datalog.co.uk/browse/detail.php/CompanyNumber/01590006/CompanyName/KENBEET+LIMITED) is a company registered in 1981 in the UK (possibly no relation)
+- is it an intentional misspelling of "can beat"? this is the only intelligible reference I can find on the web. [link](http://kol.coldfront.net/thekolwiki/index.php/Chori_Zo) (pdf also downloaded)
 
